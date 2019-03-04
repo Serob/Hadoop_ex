@@ -1,6 +1,8 @@
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
@@ -35,15 +37,30 @@ public class WordMapper extends Mapper<Object, Text, Text, IntWritable> {
         writer.close();
 
         IndexReader reader = DirectoryReader.open(indexDirectory);
+//        Reader ioReader = new StringReader(value.toString());
 
-        Terms terms = reader.getTermVector(0, "value");
+        ///Tokenization
+        TokenStream stream = analyzer.tokenStream("value", value.toString());
+
+        stream.reset();
+        while (stream.incrementToken()) {
+            String token = stream.getAttribute(CharTermAttribute.class).toString();
+            System.out.println(token);
+            context.write(new Text(token), new IntWritable(1));
+        }
+        stream.end();
+        stream.close();
+        ////
+
+       /* Terms terms = reader.getTermVector(0, "value");
         BytesRefIterator iterator = terms.iterator();
         BytesRef byteRef;
         while ((byteRef = iterator.next()) != null) {
             String word = byteRef.utf8ToString();
             int count = (int)reader.totalTermFreq(new Term("value", word)); //int is OK (I hope))
             context.write(new Text(word), new IntWritable(count));
-        }
+        }*/
+
 
 /*        //TermQuery
         Query tst = new TermQuery(new Term("value", "test"));
