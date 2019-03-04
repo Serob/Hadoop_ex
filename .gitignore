@@ -4,6 +4,7 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/kotlinc.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -50,4 +51,4 @@ target/
 
 # Program args
 input/
-output/
+output*/

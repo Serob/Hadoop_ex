@@ -1,12 +1,17 @@
-import org.apache.hadoop.conf.*;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
-import org.apache.hadoop.mapreduce.lib.input.*;
-import org.apache.hadoop.mapreduce.lib.output.*;
-import org.apache.hadoop.util.*;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class HadoopDriver extends Configured implements Tool {
 
@@ -15,9 +20,10 @@ public class HadoopDriver extends Configured implements Tool {
         System.exit(ret);
     }
 
+    @Override
     public int run(String[] args) throws Exception {
 
-        if (args.length != 2) {
+        if (args.length < 2) {
 			ToolRunner.printGenericCommandUsage(System.err);
             System.err.println("USAGE: hadoop jar ... <input-dir> <output-dir>");
             System.exit(1);

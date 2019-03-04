@@ -1,21 +1,22 @@
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.document.*;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.*;
-import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.BytesRefIterator;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
 
 public class WordMapper extends Mapper<Object, Text, Text, IntWritable> {
 
+    @Override
     public void map(Object key, Text value, Context context)
             throws IOException, InterruptedException {
 
@@ -45,7 +46,6 @@ public class WordMapper extends Mapper<Object, Text, Text, IntWritable> {
         stream.reset();
         while (stream.incrementToken()) {
             String token = stream.getAttribute(CharTermAttribute.class).toString();
-            System.out.println(token);
             context.write(new Text(token), new IntWritable(1));
         }
         stream.end();
@@ -77,7 +77,7 @@ public class WordMapper extends Mapper<Object, Text, Text, IntWritable> {
         TopDocs docs = searcher.search(wordQuery, 20);
         ScoreDoc[] hits = docs.scoreDocs;
 
-        for (int i = 0; i < hits.length; ++i) {
+        for (int i = 0; i < hits.searchableLength; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
             System.out.println((i + 1) + ". " + d.get("key") + "\t" + d.get("value"));

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="H2_run" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="HadoopDriver" />
+    <module name="H2" />
+    <option name="PROGRAM_PARAMETERS" value="input output_h2 5" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

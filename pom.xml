@@ -4,8 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.serob.hadoop-group</groupId>
-    <artifactId>Hadoop_test</artifactId>
+    <groupId>com.serob.hadoop</groupId>
+    <artifactId>root_ex</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <build>
@@ -22,6 +23,10 @@
             </plugin>
         </plugins>
     </build>
+    <modules>
+        <module>H1</module>
+        <module>H2</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -57,8 +62,6 @@
             <artifactId>lucene-core</artifactId>
             <version>6.2.1</version>
         </dependency>
-
-
     </dependencies>
 
 </project>
