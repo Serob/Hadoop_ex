@@ -26,6 +26,7 @@
     <modules>
         <module>H1</module>
         <module>H2</module>
+        <module>H3</module>
     </modules>
 
     <dependencies>
