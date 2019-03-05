@@ -9,8 +9,9 @@
         <module name="H1" />
         <module name="H2" />
         <module name="H3" />
+        <module name="H4" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="8" />
   </component>
 </project>

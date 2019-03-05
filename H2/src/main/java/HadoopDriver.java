@@ -35,6 +35,7 @@ public class HadoopDriver extends Configured implements Tool {
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex){
             WordMapper.searchableLength = DEFAULT_SEARCH_LENGTH;
         }
+        System.out.println("Will search words of " + WordMapper.searchableLength + " length.");
 
         //Init job
 		Job job = Job.getInstance(getConf(), "WordCounter");
