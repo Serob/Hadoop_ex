@@ -1,6 +1,11 @@
+package com.serob.main;
+
+import com.serob.compare.TupleValuePartitioner;
+import com.serob.compare.TupleWritableComparator;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -41,6 +46,10 @@ public class HadoopDriver extends Configured implements Tool {
         job.setOutputFormatClass(TextOutputFormat.class); //works without this line also
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(TupleWritable.class);
+
+        //sort
+//        job.setPartitionerClass(TupleValuePartitioner.class);
+        job.setSortComparatorClass(TupleWritableComparator.class);
 
         //Define mapper/combiner/reducer
 		job.setMapperClass(WordMapper.class);

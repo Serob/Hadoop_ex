@@ -1,4 +1,5 @@
-import org.apache.hadoop.io.IntWritable;
+package com.serob.main;
+
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
