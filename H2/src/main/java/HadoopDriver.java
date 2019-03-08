@@ -14,7 +14,8 @@ import java.util.Arrays;
 
 public class HadoopDriver extends Configured implements Tool {
 
-    private static final int DEFAULT_SEARCH_LENGTH = 4;
+    final static String PARAM_LENGTH = "length";
+    final static String PARAM_IS_SET = "isSet";
 
     public static void main(String[] args) throws Exception {
         int ret = ToolRunner.run(new Configuration(), new HadoopDriver(), args);
@@ -30,15 +31,20 @@ public class HadoopDriver extends Configured implements Tool {
             System.exit(1);
         }
 
+        Configuration conf = getConf();
+
         try {
-            WordMapper.searchableLength = Integer.parseInt(args[2]);
+            Integer.parseInt(args[2]);
+            conf.set(PARAM_LENGTH, args[2]);
+            conf.set(PARAM_IS_SET, Boolean.toString(true));
+            System.out.println("-- Will search words of " + args[2] + " length.");
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex){
-            WordMapper.searchableLength = DEFAULT_SEARCH_LENGTH;
+            conf.set(PARAM_IS_SET, Boolean.toString(false));
+            System.out.println("-- Will search words of ANY length.");
         }
-        System.out.println("Will search words of " + WordMapper.searchableLength + " length.");
 
         //Init job
-		Job job = Job.getInstance(getConf(), "WordCounter");
+		Job job = Job.getInstance(conf, "WordCounter");
         job.setJarByClass(HadoopDriver.class);
 
         //Define input format

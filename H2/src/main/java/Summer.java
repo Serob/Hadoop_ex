@@ -12,8 +12,6 @@ public class Summer extends Reducer<IntWritable, IntWritable, IntWritable, IntWr
             sum += val.get();
         }
 
-        System.out.println("Reduce key: " + key);
-        System.out.println("Reduce sum result: " + sum);
         context.write(key, new IntWritable(sum));
     }
 }
