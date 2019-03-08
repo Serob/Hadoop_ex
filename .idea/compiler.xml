@@ -10,6 +10,7 @@
         <module name="H2" />
         <module name="H3" />
         <module name="H4" />
+        <module name="H5" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8" />

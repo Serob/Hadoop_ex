@@ -5,30 +5,69 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
 
 import java.io.IOException;
+import java.text.BreakIterator;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Locale;
+import java.lang.StringBuilder;
 
 public class WordMapper extends Mapper<Object, Text, Text, Text> {
 
     @Override
-    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+    public void run(Context context) throws IOException, InterruptedException {
+        setup(context);
+        StringBuilder buffer = new StringBuilder();
+        BreakIterator boundary = BreakIterator.getSentenceInstance(new Locale("ru", "RU"));
+        try {
+            while (context.nextKeyValue()) {
+                if(buffer.length() > 0){
+                    buffer.append(" ");
+                }
+                buffer.append(context.getCurrentValue().toString());
+                String sentence = getFirstSentence(boundary, buffer);
+                if(sentence != null){
+                    map(context.getCurrentKey(), new Text(sentence), context);
+                }
+            }
+            //map on tail
+            if(buffer.length() > 0){
+                //considering that all remaining part is a sentence.
+                map(context.getCurrentKey(), new Text(buffer.toString()), context);
+            }
 
-        StandardAnalyzer analyzer = new StandardAnalyzer();
-
-        String[] sentences = value.toString().split("\\.");
-        for (String s : sentences) {
-            addToContext(s, analyzer, context);
+        } finally {
+            cleanup(context);
         }
+    }
 
+    /**
+     * Return first sentence if there are more than one in the provided buffer, otherwise - return {@code null}.
+     * <br>
+     * NOTE: changes the state of the buffer: after returning not {@code null} value will remove corresponding data from the buffer.
+     * @param boundary Initialized object of {@link BreakIterator} in some locale.
+     * @param buffer {@link StringBuilder} object, holding all sentences.
+     * @return A sentence, if there is more than one in the provided buffer {@link StringBuilder}
+     */
+    private static String getFirstSentence(BreakIterator boundary, StringBuilder buffer){
+        boundary.setText(buffer.toString());
+        int concreteEnd = boundary.last();
+        int start = boundary.first();
+        int end = boundary.next();
+
+        if(concreteEnd != end && end != BreakIterator.DONE){
+            String sentence = buffer.substring(start, end);
+            buffer.replace(start, end, ""); //remove the sentence from the buffer
+            return sentence;
+        }
+        return null;
+    }
+
+    @Override
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        StandardAnalyzer analyzer = new StandardAnalyzer();
+        //Each value is now a sentence
+        addToContext(value.toString(), analyzer, context);
     }
 
     private void addToContext(String value, Analyzer analyzer, Context context)
