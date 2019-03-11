@@ -2,6 +2,14 @@
 <project version="4">
   <component name="PublishConfigData">
     <serverData>
+      <paths name="hadoop_outputs">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/H3" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="hadoop_wordcount">
         <serverdata>
           <mappings>
