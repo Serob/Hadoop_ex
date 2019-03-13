@@ -5,11 +5,11 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.*;
 
-public class SortReducer extends Reducer<IntWritable, Text, Text, TupleWritable> {
+public class SortReducer extends Reducer<TupleWritable, Text, Text, TupleWritable> {
 
     @Override
-    protected void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-        TreeSet<Container> containers = new TreeSet<>();
+    protected void reduce(TupleWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+/*        TreeSet<Container> containers = new TreeSet<>();
         List<Container> vle = new ArrayList<>();
 
         values.forEach(v -> {
@@ -23,22 +23,11 @@ public class SortReducer extends Reducer<IntWritable, Text, Text, TupleWritable>
 
         for(Container c : containers){
             context.write(c.key, c.value);
-        }
-    }
+        }*/
 
-    private static  class Container implements Comparable{
-
-        private Text key;
-        private TupleWritable value;
-
-        Container(Text key, TupleWritable value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        @Override
-        public int compareTo(Object o) {
-            return value.compareTo(((Container)o).value);
+        //actually values must contain ONE element
+        for (Text value : values) {
+            context.write(value, key);
         }
     }
 

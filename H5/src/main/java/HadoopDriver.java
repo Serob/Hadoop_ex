@@ -1,7 +1,6 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -58,17 +57,20 @@ public class HadoopDriver extends Configured implements Tool {
     private Job sorterJob(String input, String output) throws IOException {
         Job job = createSimpleJob(input, output, "DESC sorter");
 
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(TupleWritable.class);
-
         //Define mapper/combiner/reducer
         job.setMapperClass(SortMapper.class);
-        job.setNumReduceTasks(0); //turn off reducer
-//        job.setReducerClass(SortReducer.class);
+//        job.setNumReduceTasks(0); //turn off reducer
+        job.setReducerClass(SortReducer.class);
+//        job.setSortComparatorClass(TupleWritable.Comparator.class);
 
         //If types for map and reduce (outputs) are different, then:
-//        job.setMapOutputKeyClass(IntWritable.class);
-//        job.setMapOutputValueClass(Text.class);
+        //MAP
+        job.setMapOutputKeyClass(TupleWritable.class);
+        job.setMapOutputValueClass(Text.class);
+
+        //REDUCE
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(TupleWritable.class);
 
         return job;
     }
@@ -94,7 +96,7 @@ public class HadoopDriver extends Configured implements Tool {
         if (countRes) {
             return sorterJob.waitForCompletion(true) ? 0 : 1;
         }
-        return 1;
+        return 1; //something went wrong
     }
 
 }

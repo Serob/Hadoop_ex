@@ -5,9 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.TreeSet;
 
-public class SortMapper extends Mapper<Object, Text, Text, TupleWritable> {
+public class SortMapper extends Mapper<Object, Text, TupleWritable, Text> {
 
     private static  class Container implements Comparable<Container>{
 
@@ -24,7 +23,8 @@ public class SortMapper extends Mapper<Object, Text, Text, TupleWritable> {
             return value.compareTo(o.value);
         }
     }
-    @Override
+
+/*    @Override
     public void run(Context context) throws IOException, InterruptedException {
         setup(context);
         List<Container> containers = new ArrayList<>();
@@ -46,7 +46,7 @@ public class SortMapper extends Mapper<Object, Text, Text, TupleWritable> {
         } finally {
             cleanup(context);
         }
-    }
+    }*/
 
     @Override
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -57,7 +57,8 @@ public class SortMapper extends Mapper<Object, Text, Text, TupleWritable> {
         String[] elements = value.toString().split("\\s+");
         //maybe check if there are exactly 3 elements
         Text firstWord = new Text(elements[0]);
-        TupleWritable tuple = new TupleWritable(elements[1], Integer.parseInt(elements[2]));
-        context.write(firstWord, tuple);
+        TupleWritable tuple = new TupleWritable(elements[0], elements[1], Integer.parseInt(elements[2]));
+//        context.write(firstWord, tuple); //usable for 'run' version (see commented method from above)
+        context.write(tuple, firstWord); //change places to auto-sort b key
     }
 }
