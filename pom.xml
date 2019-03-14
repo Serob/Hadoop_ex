@@ -28,6 +28,8 @@
         <module>H2</module>
         <module>H3</module>
         <module>H4</module>
+        <module>H5</module>
+        <module>S1</module>
     </modules>
 
     <dependencies>

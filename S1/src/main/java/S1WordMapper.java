@@ -1,3 +1,4 @@
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.lucene.analysis.Analyzer;
@@ -9,9 +10,8 @@ import java.io.IOException;
 import java.text.BreakIterator;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.lang.StringBuilder;
 
-public class WordMapper extends Mapper<Object, Text, Text, Text> {
+public class S1WordMapper extends Mapper<Object, Text, CoupleWritable, IntWritable> {
 
     @Override
     public void run(Context context) throws IOException, InterruptedException {
@@ -85,7 +85,8 @@ public class WordMapper extends Mapper<Object, Text, Text, Text> {
             if (couple.size() == 2) {
                 String el1 = couple.peekFirst();
                 String el2 = couple.peekLast();
-                context.write(new Text(el1), new Text(el2));
+                CoupleWritable coupleWr = new CoupleWritable(el1, el2);
+                context.write(coupleWr, new IntWritable(1)); //1
             }
         }
         stream.end();
